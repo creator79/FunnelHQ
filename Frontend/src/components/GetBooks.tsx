@@ -13,7 +13,7 @@ type Book = {
   };
   
 
-
+import { Link } from 'react-router-dom';
 
 const BookSearch = () => {
   const [inputValue, setInputValue] = useState('');
@@ -130,6 +130,9 @@ const BookSearch = () => {
   </form>
 </div>
 
+<Link to="/books">
+<button className="">View Library</button>
+</Link>
 
     <div className="main">
       {/* Use the fetched books to generate cards */}
