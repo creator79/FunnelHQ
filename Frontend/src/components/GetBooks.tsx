@@ -20,8 +20,9 @@ const BookSearch = () => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(false);
 
-  const getBooks = async (e) => {
+  const getBooks = async (e: { preventDefault: () => void; }) => {
     e.preventDefault();
+
     setLoading(true);
   
     try {
@@ -29,7 +30,7 @@ const BookSearch = () => {
       const data = await response.json();
   
       const fetchedBooks = await Promise.all(
-        data.docs.map(async (doc) => {
+        data.docs.map(async (doc: { cover_i: any; author_key: any[]; title: any; author_name: any[]; first_publish_year: any; subject: any[]; description: any; review: any; }) => {
           if (doc.cover_i) {
             const authorKey = doc.author_key?.[0];
             if (!authorKey) return null; // Skip if author key is undefined
@@ -62,10 +63,57 @@ const BookSearch = () => {
   
   
 
-  const addBook = (title, author, authorBio, publishYear, description, review, cover, genre) => {
-    // Implement the logic to add the book to your desired state or perform any other action
-    console.log('Adding book:', title, author, authorBio, publishYear, description, review, cover, genre);
+  const handleAddBook = (book: Book) => {
+    addBook(
+      book.title,
+      book.author,
+      book.authorBio,
+      book.publishYear,
+      book.description,
+      book.review,
+      book.cover,
+      book.genre
+    );
   };
+
+  const addBook = async (
+    title: string,
+    author: string,
+    authorBio: string,
+    publishYear: number,
+    description: string,
+    review: string,
+    cover: string,
+    genre: string
+  ) => {
+    try {
+      const response = await fetch('http://localhost:3001/api/addBook', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          author,
+          authorBio,
+          publishYear,
+          description,
+          review,
+          cover,
+          genre,
+        }),
+      });
+
+      if (response.ok) {
+        console.log('Book added successfully');
+      } else {
+        console.error('Error adding book:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error adding book:', error.message);
+    }
+  };
+
 
   return (
     <div>
@@ -81,17 +129,6 @@ const BookSearch = () => {
     <input type="submit" onClick={getBooks} defaultValue="Submit" />
   </form>
 </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
     <div className="main">
@@ -125,23 +162,9 @@ const BookSearch = () => {
             <br />
             <div className="rating">Rate this book:</div>
             <br />
-                <button
-                  className="btn card_btn"
-                  onClick={() =>
-                    addBook(
-                      book.title,
-                      book.author,
-                      book.authorBio,
-                      book.publishYear,
-                      book.description,
-                      book.review,
-                      book.cover,
-                      book.genre
-                    )
-                  }
-                >
-                 Add to Library
-                </button>
+            <button className="btn card_btn" onClick={() => handleAddBook(book)}>
+                      Add to Library
+                    </button>
               </div>
             </div>
           </li>

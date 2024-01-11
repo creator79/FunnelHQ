@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import './App.css'
 import GetBooks from './components/GetBooks'
-import Dummy from './components/Dummy'
+
+import Books from './components/Books'
 
 function App() {
 
@@ -9,7 +10,7 @@ function App() {
   return (
     <>
   <GetBooks />
-  {/* <Dummy  /> */}
+<Books  />
     </>
   )
 }
