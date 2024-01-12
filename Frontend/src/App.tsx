@@ -1,34 +1,38 @@
-import React, { useState, useEffect, ReactNode } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import GetBooks from './components/GetBooks';
 import Books from './components/Books';
-import LoginPage from './components/Email';
-import SignupPage from './components/Signup';
+import LoginPage from './pages/Login';
+import SignupPage from './pages/Signup';
+
+// Higher-order component to protect routes
+const ProtectedRoute: React.FC<{ element: React.ReactNode }> = ({ element }) => {
+  const isLoggedIn = sessionStorage.getItem('token') !== null;
+
+  if (!isLoggedIn) {
+    // Redirect to login page if not logged in
+    return <Navigate to="/" />;
+  }
+
+  // Render the protected route
+  return <>{element}</>;
+};
 
 function App() {
-  const [isLoggedIn, setLoggedIn] = useState(false);
-
-  useEffect(() => {
-    // Check if the token is present in local storage
-    const token = localStorage.getItem("token");
-    if (token) {
-      // You might want to validate the token here (e.g., check expiration)
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  }, []);
-
-  const PrivateRoute = ({ element, ...props }: { element: ReactNode }) => {
-    return isLoggedIn ? element : <Navigate to="/" />;
-  };
-
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginPage onLogin={() => setLoggedIn(true)} />} />
-        <Route path="/home" element={<PrivateRoute element={<GetBooks />} />} />
-        <Route path="/team" element={<PrivateRoute element={<Books />} />} />
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
+        {/* Use the ProtectedRoute component for protected routes */}
+        <Route
+          path="/home"
+          element={<ProtectedRoute element={<GetBooks />} />}
+        />
+        <Route
+          path="/books"
+          element={<ProtectedRoute element={<Books />} />}
+        />
       </Routes>
     </BrowserRouter>
   );

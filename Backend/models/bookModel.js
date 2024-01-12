@@ -1,4 +1,3 @@
-import queryAsync from '../utils/dbError.js';
 import db from '../utils/database.js'
 
 const BookModel = {

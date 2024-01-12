@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import './Dummy.css';
+import './Books.css';
+import './Search.css'
 
 type Book = {
   title: string;

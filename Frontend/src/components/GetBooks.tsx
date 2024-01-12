@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "./Dummy.css"
+import "./GetBooks.css"
 
 type Book = {
     title: string;
@@ -109,8 +109,12 @@ const BookSearch = () => {
       } else {
         console.error('Error adding book:', response.statusText);
       }
-    } catch (error) {
-      console.error('Error adding book:', error.message);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        console.error('Error adding book:', error.message);
+      } else {
+        console.error('An unknown error occurred:', error);
+      }
     }
   };
 
@@ -118,7 +122,7 @@ const BookSearch = () => {
   return (
     <div>
 
-<div className="search">
+{/* <div className="search">
   <form className="search-form">
     <input
       type="text"
@@ -128,10 +132,32 @@ const BookSearch = () => {
     />
     <input type="submit" onClick={getBooks} defaultValue="Submit" />
   </form>
-</div>
+</div> */}
+
+<div className="search__container">
+    <p className="search__title">Go ahead, hover over Search for books, authors, categories and more..</p>
+    <input className="search__input" 
+    type="text"
+    value={inputValue}
+    onChange={(e) => setInputValue(e.target.value)}
+    placeholder="Search for books"
+    
+    />
+  </div>
+  <button onClick={getBooks} className='button_container'>
+  Search
+    <div className="arrow-wrapper">
+        <div className="arrow"></div>
+
+    </div>
+</button>
+  <div className="credits__container">
+  
+  </div>
+
 
 <Link to="/books">
-<button className="">View Library</button>
+<button className="button_container">View Library</button>
 </Link>
 
     <div className="main">
