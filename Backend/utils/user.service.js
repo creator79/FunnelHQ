@@ -63,5 +63,17 @@ const getUserByEmail = (email, callback) => {
     );
 }
 
+const findByUsername = (username, callback) => {
+    db.query(
+        `SELECT * FROM users WHERE username=?`,
+        [username],
+        (err, results, fields) => {
+            if (err) {
+                return callback(err);
+            }
+            return callback(null, results);
+        }
+    );
+}
 
-export { create , getUser , updateUser , deleteUser , getUserByEmail};
+export { create , getUser , updateUser , deleteUser , getUserByEmail , findByUsername};

@@ -12,6 +12,8 @@ function Signup() {
     email: '',
     password: '',
     password2: '',
+    general: '',
+    sqlError: '',
   });
 
   const [form, setForm] = useState({
@@ -29,27 +31,35 @@ function Signup() {
       email: '',
       password: '',
       password2: '',
+     general: '',
+     sqlError: '',
     });
-
+  
     if (form.password !== form.password2) {
       setErrors((prevErrors) => ({ ...prevErrors, password2: 'Passwords do not match' }));
       return;
     }
-
+  
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(form.email)) {
       setErrors((prevErrors) => ({ ...prevErrors, email: 'Invalid email address' }));
       return;
     }
-
+  
     try {
       const response = await axios.post('http://localhost:3001/api/users/register/', form);
       console.log(form);
       console.log(response);
-navigate('/');
+      navigate('/');
     } catch (error) {
       console.error(error);
-      setErrors((prevErrors) => ({ ...prevErrors, general: error.response.data.error }));
+      if (error.response && error.response.data && error.response.data.message) {
+        // Display the error message from the API response
+        setErrors((prevErrors) => ({ ...prevErrors, general: error.response.data.message }));
+      } else {
+        // Handle other error scenarios as needed
+        setErrors((prevErrors) => ({ ...prevErrors, general: 'An error occurred during registration.' }));
+      }
     }
   };
 
@@ -63,7 +73,6 @@ navigate('/');
     <div id="login-box">
       <div className="left">
         <h1>Sign up</h1>
-        {/* {errors.general && <div className="error">{errors.general}</div>} */}
         <form>
           <input type="text" name="username" placeholder="Username" onChange={handleChange} />
           {errors.username && <div className="error">{errors.username}</div>}
@@ -74,6 +83,7 @@ navigate('/');
           <input type="password" name="password2" placeholder="Retype password" onChange={handleChange} />
           {errors.password2 && <div className="error">{errors.password2}</div>}
         </form>
+        {errors.general && <div className="error">{errors.general} </div>}
       </div>
       <div className="right">
         <span className="loginwith">
